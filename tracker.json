@@ -1,0 +1,58 @@
+[
+    {
+        "name": "Play_Valorant",
+        "due": "2023-04-02 01:01:01",
+        "lastActivity": "2023-02-18 20:44:22.130293",
+        "description": "I need to play and go to the Gold Rank on Valorant",
+        "done": "2023-02-20 09:43:39.405170"
+    },
+    {
+        "name": "gym",
+        "due": "2023-03-01 01:02:03",
+        "lastActivity": "2023-02-18 21:12:51.793655",
+        "description": "I need to go to the gym",
+        "done": "2023-02-18 21:13:03.835807"
+    },
+    {
+        "name": "Study",
+        "due": "2023-03-02 01:01:23",
+        "lastActivity": "2023-02-20 09:41:43.003192",
+        "description": "I need to prepare for the exams",
+        "done": "2023-02-20 09:43:50.379128"
+    },
+    {
+        "name": "Movie",
+        "due": "2023-01-01 01:01:23",
+        "lastActivity": "2023-02-20 09:56:44.495203",
+        "description": "I need to Watch Top Gun Maverick",
+        "done": "2023-02-20 10:34:03.141264"
+    },
+    {
+        "name": "Buy_a_cat",
+        "due": "2023-01-02 01:01:34",
+        "lastActivity": "2023-02-20 09:57:26.015740",
+        "description": "I want to own a pet",
+        "done": "2023-02-20 10:34:09.760980"
+    },
+    {
+        "name": "Meditate",
+        "due": "2023-03-03 01:01:33",
+        "lastActivity": "2023-02-20 10:37:51.859581",
+        "description": "I need to clear my mind by meditating",
+        "done": false
+    },
+    {
+        "name": "Dance",
+        "due": "2023-03-04 01:03:03",
+        "lastActivity": "2023-02-20 10:38:21.153428",
+        "description": "I want to dance",
+        "done": false
+    },
+    {
+        "name": "Explore_NY",
+        "due": "2023-03-03 01:01:01",
+        "lastActivity": "2023-02-20 10:58:41.500689",
+        "description": "I have to explore New York",
+        "done": false
+    }
+]
