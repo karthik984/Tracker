@@ -1,44 +1,32 @@
-﻿// See https://aka.ms/new-console-template for more information
-using System.Collections.Concurrent;
-using System.Text.Json;
-using Microsoft.VisualBasic;
-
-Console.WriteLine("Welcome to Task Tracker!");
-load();
-
-void load()
+﻿
+namespace TaskTracker
 {
-    Console.WriteLine("Loading task list from a json file:");
-    using(var reader = new StreamReader("tracker.json"))
+    internal partial class Program
     {
-        string jsonContent = reader.ReadToEnd();
-        List<Task> tasks = new ();
-        tasks = JsonSerializer.Deserialize<List<Task>>(jsonContent);
-        printTasks(tasks);
+        private static void Main(string[] args)
+        {
+            Console.WriteLine("Welcome to Task Tracker!");
+            var taskHelper = new TasksHelper ();
+            //taskHelper.LoadTasks();
+            TasksHelper.GetCommands();
+        }
     }
 }
 
-void printTasks(List<Task>? tasks)
-{
-    if(tasks.Count ==0)
-    {
-        System.Console.WriteLine("No tasks to print");
-        return;
-    }
 
-    foreach(Task task in tasks)
-    {
-        System.Console.WriteLine($"task: {task.Name}");
-        System.Console.WriteLine($"Due: {task.Due}");
-        System.Console.WriteLine($"task: {task.Status}");
-    }
-}
 
-public class Task 
-{
-    public string Name {get; set;}
-    public DateTime Due { get; set; }
-    public string Description { get; set; }
-    public DateTime LastUpdated {get; set; }
-    public bool Status {get; set; } = false;
-}
+// command_list = ["add", "view", "update", "list", "incomplete", "overdue", "delete", "remaining", "help", "quit", "exit", "done"]
+// def print_options():
+//     """ prints a readable list of commands that can be typed when prompted """
+//     print("Choices")
+//     print("add - Creates a task")
+//     print("update - updates a specific task")
+//     print("view - see more info about a task by number")
+//     print("list - lists tasks")
+//     print("incomplete - lists incomplete tasks")
+//     print("overdue - lists overdue tasks")
+//     print("delete - deletes a task by number")
+//     print("remaining - gets the remaining time of a task by number")
+//     print("done - marks a task complete by number")
+//     print("quit or exit - terminates the program")
+//     print("help - shows this list again")
