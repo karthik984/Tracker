@@ -3,29 +3,15 @@ using System.Text.Json;
 
 namespace TaskTracker
 {
-    public class TasksHelper
+    public partial class TasksHelper
     {
-        private static List<Task> tasks = new();
+        private static List<Task> Tasks = new();
+        private static string jsonFile = "./tracker.json";
+
         public TasksHelper()
         {
-            LoadTasks();
+            
         }
-        private Dictionary<string, Action<string>> commandActions = new Dictionary<string, Action>
-        {
-            {"add", AddTask},
-            {"update", UpdateTask},
-            {"view", TaskInfo},
-            {"list", PrintTasks},
-            {"pending", GetPendingTasks},
-            {"overdue", GetOverdueTasks},
-            {"delete", DeleteTask},
-            {"done", GetCompletedTask},
-            {"quit", ExitTask},
-            {"exit", ExitTask},
-            {"help", GetCommands}
-            // you can add other commands and actions ...
-
-        };
 
         private static void ExitTask()
         {
@@ -52,10 +38,6 @@ namespace TaskTracker
             throw new NotImplementedException();
         }
 
-        public static List<Task> Tasks { get => Tasks1; set => Tasks1 = value; }
-        public static List<Task> Tasks1 { get => tasks; set => tasks = value; }
-        public static List<Task> Tasks2 { get => tasks; set => tasks = value; }
-
         private static void TaskInfo()
         {
             throw new NotImplementedException();
@@ -66,10 +48,33 @@ namespace TaskTracker
             throw new NotImplementedException();
         }
 
-        private static void AddTask()
+        private static void AddTask(string taskName, string taskDesc, DateTime due)
         {
-            throw new NotImplementedException();
+            var task = new Task(taskName, taskDesc, due);
+            Json.saveTask(task, jsonFile);
         }
+
+
+        public static void Controller(string command)
+        {
+            switch (command)
+            {
+                case "add":
+                    Console.WriteLine("Please enter the task name: ");
+                    var taskName = Console.ReadLine();                    
+                    Console.WriteLine("Please enter the task description: ");
+                    var taskDesc = Console.ReadLine();
+                    Console.WriteLine("When's it due: ");
+                    var due = DateTime.Parse(Console.ReadLine());
+                    AddTask(taskName, taskDesc, due);
+                break;
+                default:
+                    Console.WriteLine("Please select a commad to continue..");
+                break;
+            }
+
+        }
+
         public static void GetCommands()
         {
             Console.WriteLine(@"Please select one of the commands below:
