@@ -21,9 +21,9 @@ namespace TaskTracker
         {
             Console.WriteLine(@"Available commands:
             list - Lists tasks
+            view - See more info about a task by number
             add - Creates a task
             update - Updates a specific task
-            view - See more info about a task by number
             incomplete - Lists incomplete tasks
             overdue - Lists overdue tasks
             delete - Deletes a task by number
@@ -52,6 +52,12 @@ namespace TaskTracker
                     GetAllTasks();
                     break;
                 
+                case "view":
+                    Console.WriteLine("Enter the task info that you want to view");
+                    index = int.Parse(Console.ReadLine());
+                    GetTask(index);
+                    break;
+                
                 case "add":
                     ProcessAdd();
                     break;
@@ -67,12 +73,6 @@ namespace TaskTracker
                     index = int.Parse(Console.ReadLine());
                     DeleteTask(index);
                     break;
-                
-                case "view":
-                    Console.WriteLine("Enter the task info that you want to view");
-                    index = int.Parse(Console.ReadLine());
-                    TaskInfo(index);
-                    break;
             }
 
         }
@@ -87,10 +87,20 @@ namespace TaskTracker
 
             foreach (Task task in _tasks)
             {
-                Console.WriteLine($"Task: {task.Name}");
+                Console.WriteLine($"Task {task.Id}: {task.Name}");
                 Console.WriteLine($"Due: {task.Due}");
                 Console.WriteLine($"Completed: {(task.Done == null ? "Not Done" : task.Done)}");
             }
+        }
+        private static void GetTask(int index)
+        {
+            Task task = _tasks[index-1];
+            Console.WriteLine($"S.No.: {task.Id}");
+            Console.WriteLine($"Task: {task.Name}");
+            Console.WriteLine($"Description: {task.Description}");
+            Console.WriteLine($"Due: {task.Due}");
+            Console.WriteLine($"Completed: {(task.Done == null ? "Not Done" : task.Done)}");
+            Console.WriteLine($"Last Updated: {task.LastUpdated}");    
         }
         public static void ProcessAdd()
         {
@@ -122,16 +132,6 @@ namespace TaskTracker
             throw new NotImplementedException();
         }
 
-        private static void TaskInfo(int index)
-        {
-            Task task = _tasks[index];
-            Console.WriteLine($"S.No.: {task.Id}");
-            Console.WriteLine($"Task: {task.Name}");
-            Console.WriteLine($"Description: {task.Description}");
-            Console.WriteLine($"Due: {task.Due}");
-            Console.WriteLine($"Completed: {(task.Done == null ? "Not Done" : task.Done)}");
-            Console.WriteLine($"Last Updated: {task.LastUpdated}");    
-        }
 
         private static void ProcessUpdate(int index)
         {
