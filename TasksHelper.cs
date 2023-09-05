@@ -1,8 +1,4 @@
-using System.Linq.Expressions;
 // See https://aka.ms/new-console-template for more information
-using System.Text.Json;
-using System.Xml.Linq;
-
 namespace TaskTracker
 {
     public partial class TasksHelper
@@ -10,6 +6,22 @@ namespace TaskTracker
         private static List<Task> _tasks = new();
         private static string jsonFile = "./tracker.json";
         private static void Save() => JsonFunctions.SaveToJson(_tasks, jsonFile);
+        private static void PrintAvailbleCommands() =>
+            Console.WriteLine(@"Available commands:
+                        list - Lists tasks
+                        view - See more info about a task by number
+                        add - Creates a task
+                        update - Updates a specific task
+                        incomplete - Lists incomplete tasks
+                        overdue - Lists overdue tasks
+                        delete - Deletes a task by number
+                        remaining - Gets the remaining time of a task by number
+                        finish - Marks a task complete by number
+                        clear - Clear the terminal
+                        quit - Terminates the program
+                        exit - Terminates the program
+                        help - Shows this list again");
+
 
         public TasksHelper()
         {
@@ -19,20 +31,8 @@ namespace TaskTracker
 
         public static void CommandController()
         {
-            Console.WriteLine(@"Available commands:
-            list - Lists tasks
-            view - See more info about a task by number
-            add - Creates a task
-            update - Updates a specific task
-            incomplete - Lists incomplete tasks
-            overdue - Lists overdue tasks
-            delete - Deletes a task by number
-            remaining - Gets the remaining time of a task by number
-            done - Marks a task complete by number
-            quit - Terminates the program
-            exit - Terminates the program
-            help - Shows this list again");
-
+            PrintAvailbleCommands();
+            
             string command;
             
             do{
@@ -45,16 +45,30 @@ namespace TaskTracker
 
         public static void TaskActionController(string command)
         {
-            int index;
+            int index = 0;
+
+            if (command == "view" || command == "add" || command == "update" || 
+                command == "finish" || command == "remaining")
+            {
+                Console.WriteLine($"Enter the Task Number on which you want to perform the command:");
+                index = int.Parse(Console.ReadLine());
+                index--;
+                
+                if(index <= 0 || index >_tasks.Count()-1)
+                {
+                    Console.WriteLine($"No task exists at index {index + 1}");
+                    Console.WriteLine($"Please select number between 1 and {_tasks.Count()} ");
+                    return;
+                }
+            }
+
             switch (command)
             {
                 case "list":
-                    GetAllTasks();
+                    GetTasks(_tasks);
                     break;
                 
                 case "view":
-                    Console.WriteLine("Enter the task info that you want to view");
-                    index = int.Parse(Console.ReadLine());
                     GetTask(index);
                     break;
                 
@@ -63,38 +77,65 @@ namespace TaskTracker
                     break;
                 
                 case "update":
-                    Console.WriteLine("Enter the Task Number which you want to update:");
-                    index = int.Parse(Console.ReadLine());                    
                     ProcessUpdate(index);                    
                     break;
                 
                 case "delete":
-                    Console.WriteLine("Enter the Task Number to remove");
-                    index = int.Parse(Console.ReadLine());
                     DeleteTask(index);
                     break;
-            }
 
+                case "incomplete":
+                    var incompleteTasks = _tasks.Where(t => t.Done == null).ToList();
+                    GetTasks(incompleteTasks);
+                    break;
+                
+                case "completed":
+                    var completedTasks = _tasks.Where(t => t.Done != null).ToList();
+                    GetTasks(completedTasks);
+                    break;
+
+                case "finish":
+                    _tasks[index].Done = DateTime.Now;
+                    Save();
+                    break;
+                
+                case "overdue":
+                    var overdueTasks = _tasks.Where(t => t.Due < DateTime.Now && t.Done == null).ToList();
+                    GetTasks(overdueTasks);
+                    break;
+                case "remaining":
+                    PrintRemainingTime(index);                    
+                    break;
+
+                case "clear":
+                    Console.Clear();
+                    break;
+            }
         }
 
-        public static void GetAllTasks()
+        public static void GetTasks(List<Task> tasks)
         {
-            if (_tasks.Count == 0)
+            if (tasks.Count == 0)
             {
                 Console.WriteLine("No tasks to print");
                 return;
             }
-
-            foreach (Task task in _tasks)
+            var defaultColor = Console.ForegroundColor;
+            foreach (Task task in tasks)
             {
+                Console.ForegroundColor = Tools.Alternate(Console.ForegroundColor, ConsoleColor.DarkGreen, ConsoleColor.DarkBlue);
                 Console.WriteLine($"Task {task.Id}: {task.Name}");
                 Console.WriteLine($"Due: {task.Due}");
                 Console.WriteLine($"Completed: {(task.Done == null ? "Not Done" : task.Done)}");
+                Console.WriteLine();
             }
+            Console.ForegroundColor = defaultColor;
+            
         }
+
         private static void GetTask(int index)
         {
-            Task task = _tasks[index-1];
+            Task task = _tasks[index];
             Console.WriteLine($"S.No.: {task.Id}");
             Console.WriteLine($"Task: {task.Name}");
             Console.WriteLine($"Description: {task.Description}");
@@ -119,16 +160,7 @@ namespace TaskTracker
 
         private static void ProcessUpdate(int index)
         {
-            try
-            {
-                var task = _tasks[index];    
-            }
-            catch (System.Exception)
-            {
-                
-                throw new Exception($"No task exists at index {index}");
-            }
-                        
+            var task = _tasks[index];    
             Console.WriteLine("What's the new name of the task?");
             _tasks[index].Name  = Console.ReadLine() ?? _tasks[index].Name;
             Console.WriteLine("the new description?");
@@ -139,48 +171,33 @@ namespace TaskTracker
             _tasks[index].Due = (new_due == null)? _tasks[index].Due: new_due;
             JsonFunctions.SaveToJson(_tasks, jsonFile);
         }
-        private static void GetCompletedTask()
+
+                private static void DeleteTask(int index)
         {
-            throw new NotImplementedException();
+            foreach(var task in _tasks.Skip(index + 1))
+                task.Id--;
+
+            _tasks.Remove(_tasks[index]);
+            Console.WriteLine($"Task {index} has been removed.");
+
+            Save();        
         }
 
-        private static void GetOverdueTasks()
+        private static void PrintRemainingTime(int index) //does not work properly
         {
-            throw new NotImplementedException();
-        }
-
-        private static void GetPendingTasks()
-        {
-            throw new NotImplementedException();
-        }
-
-
-
-        private static void DeleteTask(int index)
-        {
-            try
+            if(_tasks[index].Done != null)
             {
-                
-                var task = _tasks[index];
-            }
-            catch (System.Exception)
-            {
-                
-                throw new Exception($"No task exists at index {index}");
-            }
+                Console.WriteLine("Task has already been marked done");
+                return;
+            }          
+            
+            var timeDifference = _tasks[index].Due - DateTime.Now;
+            var hours = Math.Abs(timeDifference.Hours);
+            var minutes = Math.Abs(timeDifference.Minutes);
 
-            using (var reader = new StreamReader(jsonFile))
-            {
-
-                string jsonContent = reader.ReadToEnd();
-                if (jsonContent != null)
-                {
-                    _tasks = JsonSerializer.Deserialize<List<Task>>(jsonContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                }
-            }
-
-        }
-        
+            var status = (timeDifference < TimeSpan.Zero) ? "Overdue" : "Due in";
+            Console.WriteLine($"Task {status} {hours} hrs and {minutes} mins");
+        }        
     }
 }
 
