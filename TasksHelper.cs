@@ -117,22 +117,6 @@ namespace TaskTracker
             Save();
         }
 
-        private static void GetCompletedTask()
-        {
-            throw new NotImplementedException();
-        }
-
-        private static void GetOverdueTasks()
-        {
-            throw new NotImplementedException();
-        }
-
-        private static void GetPendingTasks()
-        {
-            throw new NotImplementedException();
-        }
-
-
         private static void ProcessUpdate(int index)
         {
             try
@@ -155,6 +139,22 @@ namespace TaskTracker
             _tasks[index].Due = (new_due == null)? _tasks[index].Due: new_due;
             JsonFunctions.SaveToJson(_tasks, jsonFile);
         }
+        private static void GetCompletedTask()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void GetOverdueTasks()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void GetPendingTasks()
+        {
+            throw new NotImplementedException();
+        }
+
+
 
         private static void DeleteTask(int index)
         {
@@ -171,6 +171,7 @@ namespace TaskTracker
 
             using (var reader = new StreamReader(jsonFile))
             {
+
                 string jsonContent = reader.ReadToEnd();
                 if (jsonContent != null)
                 {
