@@ -9,6 +9,10 @@ public class Task
     public DateTime LastUpdated {get; set; }
     public DateTime? Done { get; set; }
 
+    public Task()
+    {
+        
+    }
     public Task(int id, string name, string description, DateTime due)
     {
         this.Id = id;
