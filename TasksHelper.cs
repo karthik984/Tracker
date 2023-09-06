@@ -1,49 +1,20 @@
 // See https://aka.ms/new-console-template for more information
 namespace TaskTracker
 {
-    public partial class TasksHelper
+
+    public partial class TaskHelper
     {
-        private static List<Task> _tasks = new();
-        private static string jsonFile = "./tracker.json";
-        private static void Save() => JsonFunctions.SaveToJson(_tasks, jsonFile);
-        private static void PrintAvailbleCommands() =>
-            Console.WriteLine(@"Available commands:
-                        list - Lists tasks
-                        view - See more info about a task by number
-                        add - Creates a task
-                        update - Updates a specific task
-                        incomplete - Lists incomplete tasks
-                        overdue - Lists overdue tasks
-                        delete - Deletes a task by number
-                        remaining - Gets the remaining time of a task by number
-                        finish - Marks a task complete by number
-                        clear - Clear the terminal
-                        quit - Terminates the program
-                        exit - Terminates the program
-                        help - Shows this list again");
+        private List<Task> _tasks = new();
+        private string jsonFile = "./tracker.json";
+        private void Save() => JsonFunctions.SaveToJson(_tasks, jsonFile);
 
-
-        public TasksHelper()
+        public TaskHelper()
         {
             var jsonFunctions = new JsonFunctions();
             _tasks = jsonFunctions.LoadFromJson(jsonFile).ToList();
         }
 
-        public static void CommandController()
-        {
-            PrintAvailbleCommands();
-            
-            string command;
-            
-            do{
-                Console.WriteLine("Please select a commad to continue..");
-                command = Console.ReadLine().Trim();
-                    TaskActionController(command);
-            }while(command != "exit" && command != "quit");
-            System.Console.WriteLine("bye..bye!");
-        }
-
-        public static void TaskActionController(string command)
+        public void TaskActionController(string command)
         {
             int index = 0;
 
@@ -113,7 +84,7 @@ namespace TaskTracker
             }
         }
 
-        public static void GetTasks(List<Task> tasks)
+        public  void GetTasks(List<Task> tasks)
         {
             if (tasks.Count == 0)
             {
@@ -133,7 +104,7 @@ namespace TaskTracker
             
         }
 
-        private static void GetTask(int index)
+        private void GetTask(int index)
         {
             Task task = _tasks[index];
             Console.WriteLine($"S.No.: {task.Id}");
@@ -143,7 +114,7 @@ namespace TaskTracker
             Console.WriteLine($"Completed: {(task.Done == null ? "Not Done" : task.Done)}");
             Console.WriteLine($"Last Updated: {task.LastUpdated}");    
         }
-        public static void ProcessAdd()
+        public void ProcessAdd()
         {
             Console.WriteLine("Please enter the task name: ");
             var taskName = Console.ReadLine();
@@ -158,7 +129,7 @@ namespace TaskTracker
             Save();
         }
 
-        private static void ProcessUpdate(int index)
+        private void ProcessUpdate(int index)
         {
             var task = _tasks[index];    
             Console.WriteLine("What's the new name of the task?");
@@ -172,7 +143,7 @@ namespace TaskTracker
             JsonFunctions.SaveToJson(_tasks, jsonFile);
         }
 
-                private static void DeleteTask(int index)
+        private void DeleteTask(int index)
         {
             foreach(var task in _tasks.Skip(index + 1))
                 task.Id--;
@@ -183,7 +154,7 @@ namespace TaskTracker
             Save();        
         }
 
-        private static void PrintRemainingTime(int index) //does not work properly
+        private void PrintRemainingTime(int index) //does not work properly
         {
             if(_tasks[index].Done != null)
             {

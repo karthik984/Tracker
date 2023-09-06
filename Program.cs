@@ -6,9 +6,8 @@ namespace TaskTracker
         private static void Main(string[] args)
         {
             Console.WriteLine("Welcome to Task Tracker!");
-            var taskHelper = new TasksHelper ();
-            //taskHelper.LoadTasks();
-            TasksHelper.CommandController();
+            var consoleController = new CommandController();
+            consoleController.HandleCommands();
         }
     }
 }
